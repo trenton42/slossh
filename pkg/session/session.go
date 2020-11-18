@@ -74,6 +74,7 @@ func NewSession(l zerolog.Logger, key ssh.Signer) *SlosshSession {
 		Start:     time.Now(),
 		log:       l,
 		publicKey: key,
+		Attempts:  []Attempt{},
 	}
 	return &s
 }

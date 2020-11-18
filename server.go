@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -27,11 +28,11 @@ type Slossh struct {
 }
 
 // New creates a new instance of Slossh
-func New() (*Slossh, error) {
+func New(recs []recorders.Recorder) (*Slossh, error) {
 	s := Slossh{
 		keyPath: "id_rsa",
 	}
-	s.recorders = recorders.Recorders()
+	s.recorders = recs
 	s.recordChan = make(chan session.SlosshSession, 100)
 	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
 	s.log = zerolog.New(output).With().Timestamp().Logger()
@@ -95,7 +96,16 @@ func (s *Slossh) Serve(port int) error {
 		return err
 	}
 	go s.Recorder()
-	s.log.Info().Int("port", port).Msg("Server started")
+	recNames := "none"
+	if len(s.recorders) > 0 {
+		names := make([]string, len(s.recorders))
+		for index, rec := range s.recorders {
+			names[index] = rec.Name()
+		}
+		recNames = strings.Join(names, ", ")
+	}
+
+	s.log.Info().Str("recorders", recNames).Int("port", port).Msg("Server started")
 	for {
 		connection, err := listener.Accept()
 		if err != nil {
