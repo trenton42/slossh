@@ -53,7 +53,6 @@ type SlosshSession struct {
 	SessionID     ID
 	IP            net.IP
 	ClientVersion string
-	User          string
 	Attempts      []Attempt
 	Start         time.Time
 	Finish        time.Time
