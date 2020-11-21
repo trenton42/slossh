@@ -51,11 +51,10 @@ Each session may contain zero or more login attempts. The session structure is s
 ## Command line options
 
 ```
-Usage of ./slossh:
-      --file-path string       Path to json file to store results
-      --http-url string        URL to send post requests to
-  -p, --port int               Port to listen on (default 2022)
-  -r, --recorder stringArray   recorder to use (can be specified multiple times). Available recorders: file, http
+    --file-path string       Path to json file to store results
+    --http-url string        URL to send post requests to
+-p, --port int               Port to listen on (default 2022)
+-r, --recorder stringArray   recorder to use (can be specified multiple times). Available recorders: file, http
   ```
 
 ## License
