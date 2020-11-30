@@ -12,6 +12,11 @@ import (
 	"github.com/trenton42/slossh/pkg/recorders"
 )
 
+var (
+	version = "dev"
+	date    = "unknown"
+)
+
 func main() {
 	recs := recorders.RecorderMap()
 	names := []string{}
@@ -19,11 +24,16 @@ func main() {
 		names = append(names, key)
 	}
 	recorder := pflag.StringArrayP("recorder", "r", nil, "recorder to use (can be specified multiple times). Available recorders: "+strings.Join(names, ", "))
-	port := pflag.IntP("port", "p", 2022, "Port to listen on")
+	port := pflag.IntP("port", "p", 22, "Port to listen on")
+	showVersion := pflag.BoolP("version", "v", false, "version information")
 	for _, rec := range recs {
 		pflag.CommandLine.AddFlagSet(rec.Options())
 	}
 	pflag.Parse()
+	if *showVersion {
+		fmt.Printf("Slossh version %s, build date: %s\n", version, date)
+		os.Exit(0)
+	}
 	useRecs := make([]recorders.Recorder, 0)
 	for _, recName := range *recorder {
 		if rec, ok := recs[recName]; !ok {
